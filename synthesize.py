@@ -21,25 +21,28 @@ from scipy.io.wavfile import write
 from tqdm import tqdm
 
 class Synthesizer():
-    def __init__(self, filename_text2mel_model, filename_ssrn_model):
+    def __init__(self, checkpoint_text2mel, checkpoint_ssrn):
         # Load data
         #self.L = load_data("synthesize")
 
-        self._filename_text2mel_model = os.path.realpath(filename_text2mel_model)
-        self._filename_ssrn_model = os.path.realpath(filename_ssrn_model)
+        self._checkpoint_text2mel = os.path.realpath(checkpoint_text2mel)
+        self._checkpoint_ssrn = os.path.realpath(checkpoint_ssrn)
         # Load graph
         self._graph = Graph(mode="synthesize")
         self._sess = tf.Session()
         self._sess.run(tf.global_variables_initializer())
         # Restore text2mel
-        var_list = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, 'Text2Mel')
-        saver1 = tf.train.Saver(var_list=var_list)
-        saver1.restore(self._sess, self._filename_text2mel_model)
+        #var_list = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, 'Text2Mel')
+        #saver1 = tf.train.Saver(var_list=var_list)
+        # https://stackoverflow.com/questions/41265035/tensorflow-why-there-are-3-files-after-saving-the-model
+        saver1 = tf.train.import_meta_graph(self._checkpoint_text2mel + ".meta")
+        saver1.restore(self._sess, self._checkpoint_text2mel)
         # Restore ssrn
-        var_list = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, 'SSRN') + \
-                   tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, 'gs')
-        saver2 = tf.train.Saver(var_list=var_list)
-        saver2.restore(self._sess, self._filename_ssrn_model)
+        #var_list = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, 'SSRN') + \
+        #           tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, 'gs')
+        #saver2 = tf.train.Saver(var_list=var_list)
+        saver2 = tf.train.import_meta_graph(self._checkpoint_ssrn + ".meta")        
+        saver2.restore(self._sess, self._checkpoint_ssrn)
         
         self._char2idx, self._idx2char = load_vocab()        
 
