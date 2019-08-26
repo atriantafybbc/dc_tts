@@ -1,5 +1,6 @@
-tqdm
 librosa==0.7.0
-numpy==1.16.0
+numpy>=1.11.1
 tensorboard==1.13.0
-tensorflow==1.13.2
+tensorflow==1.13.1
+tensorflow-serving-api==1.13.0
+tqdm

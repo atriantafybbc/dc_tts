@@ -158,5 +158,6 @@ if __name__ == '__main__':
 
                 # break
                 if gs > hp.num_iterations: break
+            print("Step: %r" % gs)
 
     print("Done")
