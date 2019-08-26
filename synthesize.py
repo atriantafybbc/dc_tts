@@ -67,8 +67,6 @@ class Synthesizer():
         return texts        
 
     def synthesize(self, text, filename_wav):
-        import pdb
-        pdb.set_trace()
         L = self.encode_text(text)
         Y = np.zeros((len(L), hp.max_T, hp.n_mels), np.float32)
         prev_max_attentions = np.zeros((len(L),), np.int32)
