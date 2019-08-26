@@ -41,7 +41,7 @@ def load_data(mode="train"):
     if mode=="train":
         # Parse
         fpaths, text_lengths, texts = [], [], []
-        transcript = os.path.join(hp.data, 'transcript.csv')
+        transcript = os.path.join(hp.data, 'metadata.csv')
         lines = codecs.open(transcript, 'r', 'utf-8').readlines()
         for line in lines:
             fname, _, text = line.strip().split("|")
