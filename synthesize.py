@@ -63,7 +63,7 @@ class Synthesizer():
         sents = [text_normalize(line.split(" ", 1)[-1]).strip() + "E" for line in lines] # text normalization, E: EOS
         texts = np.zeros((len(sents), hp.max_N), np.int32)
         for i, sent in enumerate(sents):
-            texts[i, :len(sent)] = [char2idx[char] for char in sent]
+            texts[i, :len(sent)] = [self._char2idx[char] for char in sent]
         return texts        
 
     def synthesize(self, text, filename_wav):
