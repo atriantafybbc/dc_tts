@@ -85,6 +85,8 @@ class Synthesizer():
         wav_total = np.array([])
         for i, mag in enumerate(Z):
             wav_sentence = spectrogram2wav(mag)
+            write(filename_wav, hp.sr, wav_sentence)
+            return
             wav_total = np.concatenate((wav_total, wav_sentence))
         write(filename_wav, hp.sr, wav_total)
 
