@@ -57,7 +57,8 @@ class Synthesizer():
         self._char2idx, self._idx2char = load_vocab()        
 
     def encode_text(self, text):
-        assert type(text) is unicode
+        if type(text) is not unicode:
+            text = text.decode('utf-8')
         lines = text.splitlines()
         sents = [text_normalize(line.split(" ", 1)[-1]).strip() + "E" for line in lines] # text normalization, E: EOS
         texts = np.zeros((len(sents), hp.max_N), np.int32)
