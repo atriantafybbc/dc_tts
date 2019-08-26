@@ -35,6 +35,9 @@ class Synthesizer():
         #var_list = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, 'Text2Mel')
         #saver1 = tf.train.Saver(var_list=var_list)
         # https://stackoverflow.com/questions/41265035/tensorflow-why-there-are-3-files-after-saving-the-model
+        var_list = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, 'Text2Mel')
+        saver1 = tf.train.Saver(var_list=var_list)
+        saver1.restore(self._sess, self._checkpoint_text2mel)
 
         #saver1 = tf.train.import_meta_graph(self._checkpoint_text2mel + ".meta")
         #saver1.restore(self._sess, self._checkpoint_text2mel)
@@ -43,8 +46,9 @@ class Synthesizer():
         #var_list = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, 'SSRN') + \
         #           tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, 'gs')
         #saver2 = tf.train.Saver(var_list=var_list)
-        saver2 = tf.train.import_meta_graph(self._checkpoint_ssrn + ".meta")        
-        saver2.restore(self._sess, self._checkpoint_ssrn)
+        
+        #saver2 = tf.train.import_meta_graph(self._checkpoint_ssrn + ".meta")        
+        #saver2.restore(self._sess, self._checkpoint_ssrn)
         
         self._char2idx, self._idx2char = load_vocab()        
 
