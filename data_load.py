@@ -39,40 +39,20 @@ def load_data(mode="train"):
     char2idx, idx2char = load_vocab()
 
     if mode=="train":
-        if "LJ" in hp.data:
-            # Parse
-            fpaths, text_lengths, texts = [], [], []
-            transcript = os.path.join(hp.data, 'transcript.csv')
-            lines = codecs.open(transcript, 'r', 'utf-8').readlines()
-            for line in lines:
-                fname, _, text = line.strip().split("|")
+        # Parse
+        fpaths, text_lengths, texts = [], [], []
+        transcript = os.path.join(hp.data, 'transcript.csv')
+        lines = codecs.open(transcript, 'r', 'utf-8').readlines()
+        for line in lines:
+            fname, _, text = line.strip().split("|")
 
-                fpath = os.path.join(hp.data, "wavs", fname + ".wav")
-                fpaths.append(fpath)
+            fpath = os.path.join(hp.data, "wavs", fname + ".wav")
+            fpaths.append(fpath)
 
-                text = text_normalize(text) + "E"  # E: EOS
-                text = [char2idx[char] for char in text]
-                text_lengths.append(len(text))
-                texts.append(np.array(text, np.int32).tostring())
-
-            return fpaths, text_lengths, texts
-        else: # nick or kate
-            # Parse
-            fpaths, text_lengths, texts = [], [], []
-            transcript = os.path.join(hp.data, 'transcript.csv')
-            lines = codecs.open(transcript, 'r', 'utf-8').readlines()
-            for line in lines:
-                fname, _, text, is_inside_quotes, duration = line.strip().split("|")
-                duration = float(duration)
-                if duration > 10. : continue
-
-                fpath = os.path.join(hp.data, fname)
-                fpaths.append(fpath)
-
-                text += "E"  # E: EOS
-                text = [char2idx[char] for char in text]
-                text_lengths.append(len(text))
-                texts.append(np.array(text, np.int32).tostring())
+            text = text_normalize(text) + "E"  # E: EOS
+            text = [char2idx[char] for char in text]
+            text_lengths.append(len(text))
+            texts.append(np.array(text, np.int32).tostring())
 
         return fpaths, text_lengths, texts
 
