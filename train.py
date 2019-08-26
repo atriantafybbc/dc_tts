@@ -144,7 +144,8 @@ if __name__ == '__main__':
     sv = tf.train.Supervisor(logdir=logdir, save_model_secs=0, global_step=g.global_step)
     with sv.managed_session() as sess:
         while 1:
-            for _ in tqdm(range(g.num_batch), desc="It", total=g.num_batch, ncols=70, leave=False, unit='b'):
+            progress_bar = tqdm(range(g.num_batch), desc="It", total=g.num_batch, ncols=70, leave=False, unit='b')
+            for _ in progress_bar:
                 gs, _ = sess.run([g.global_step, g.train_op])
 
                 # Write checkpoint files at every 1k steps
@@ -156,8 +157,8 @@ if __name__ == '__main__':
                         alignments = sess.run(g.alignments)
                         plot_alignment(alignments[0], str(gs // 1000).zfill(3) + "k", logdir)
 
-                t.set_description("It: %d" % (gs))
-                t.refresh() 
+                progress_bar.set_description("It: %d" % (gs))
+                progress_bar.refresh() 
                 # break
                 if gs > hp.num_iterations: break
             #print("Step: %r" % gs)
