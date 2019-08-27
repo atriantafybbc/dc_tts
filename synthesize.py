@@ -83,10 +83,17 @@ class Synthesizer():
 
         # Generate wav files
         wav_total = np.array([]).astype(np.float32)
+        first_sentence = True
         for i, mag in enumerate(Z):
             wav_sentence = spectrogram2wav(mag)
-            tmp = np.concatenate((wav_total, wav_sentence))
+            if first_sentence:
+                first_sentence = False
+                tmp = np.concatenate((wav_total, wav_sentence))
+            else:
+                silence = np.zeros(hp.sr * 2.0).astype(np.float32)
+                tmp = np.concatenate((silence, wav_total, wav_sentence))
             wav_total = tmp
+
         write(filename_wav, hp.sr, wav_total)
 
 def synthesize():
