@@ -101,7 +101,7 @@ class Synthesizer():
                 first_sentence = False
                 wav_total = wav_sentence
             else:
-                silence = np.zeros(int(hp.sr * 1.0)).astype(np.float32)
+                silence = np.zeros(int(hp.sr * 0.7)).astype(np.float32)
                 tmp = np.concatenate((wav_total, silence, wav_sentence))
                 wav_total = tmp
 
