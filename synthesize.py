@@ -22,6 +22,7 @@ from scipy.io.wavfile import write
 from tqdm import tqdm
 import nltk.data
 import nltk
+from text import _clean_text 
 
 class Synthesizer():
     def __init__(self, checkpoint_text2mel, checkpoint_ssrn):
@@ -71,7 +72,7 @@ class Synthesizer():
         sents = []
         for line in lines:
             sents.extend(self._sent_detector.tokenize(line.strip()))
-        norm_sents = [text_normalize(sent).strip() + "E" for sent in sents]
+        norm_sents = [text_normalize(_clean_text(sent, ['english_cleaners'])).strip() + "E" for sent in sents]
         texts = np.zeros((len(norm_sents), hp.max_N), np.int32)
         for i, sent in enumerate(norm_sents):
             texts[i, :len(sent)] = [self._char2idx[char] for char in sent]
