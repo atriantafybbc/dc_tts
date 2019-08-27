@@ -82,14 +82,11 @@ class Synthesizer():
         Z = self._sess.run(self._graph.Z, {self._graph.Y: Y})
 
         # Generate wav files
-        import pdb
-        pdb.set_trace()
-        wav_total = np.array([])
+        wav_total = np.array([]).astype(np.float32)
         for i, mag in enumerate(Z):
             wav_sentence = spectrogram2wav(mag)
-            write(filename_wav, hp.sr, wav_sentence)
-            return
-            wav_total = np.concatenate((wav_total, wav_sentence))
+            tmp = np.concatenate((wav_total, wav_sentence))
+            wav_total = tmp
         write(filename_wav, hp.sr, wav_total)
 
 def synthesize():
