@@ -57,6 +57,8 @@ class Synthesizer():
         self._char2idx, self._idx2char = load_vocab()        
 
     def encode_text(self, text):
+        import pdb
+        pdb.set_trace()
         if type(text) is not unicode:
             text = text.decode('utf-8')
         lines = text.splitlines()
