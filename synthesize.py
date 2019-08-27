@@ -12,6 +12,7 @@ import os
 from hyperparams import Hyperparams as hp
 import numpy as np
 import tensorflow as tf
+import nltk.data
 from train import Graph
 from utils import *
 from data_load import load_data
@@ -19,6 +20,8 @@ from data_load import load_vocab
 from data_load import text_normalize
 from scipy.io.wavfile import write
 from tqdm import tqdm
+import nltk.data
+import nltk
 
 class Synthesizer():
     def __init__(self, checkpoint_text2mel, checkpoint_ssrn):
@@ -54,17 +57,23 @@ class Synthesizer():
         #saver2 = tf.train.import_meta_graph(self._checkpoint_ssrn + ".meta")        
         #saver2.restore(self._sess, self._checkpoint_ssrn)
         
-        self._char2idx, self._idx2char = load_vocab()        
+        self._char2idx, self._idx2char = load_vocab()
+
+        # Make sure NLTK has the necessary data:
+        nltk.download('punkt', quiet=True)
+        self._sent_detector = nltk.data.load('tokenizers/punkt/english.pickle')
 
     def encode_text(self, text):
-        import pdb
-        pdb.set_trace()
+
         if type(text) is not unicode:
             text = text.decode('utf-8')
         lines = text.splitlines()
-        sents = [text_normalize(line.split(" ", 1)[-1]).strip() + "E" for line in lines] # text normalization, E: EOS
-        texts = np.zeros((len(sents), hp.max_N), np.int32)
-        for i, sent in enumerate(sents):
+        sents = []
+        for line in lines:
+            sents.extend(self._sent_detector.tokenize(line.strip()))
+        norm_sents = [text_normalize(sent).strip() + "E" for sent in sents]
+        texts = np.zeros((len(norm_sents), hp.max_N), np.int32)
+        for i, sent in enumerate(norm_sents):
             texts[i, :len(sent)] = [self._char2idx[char] for char in sent]
         return texts        
 
