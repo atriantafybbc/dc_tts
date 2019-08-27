@@ -88,11 +88,11 @@ class Synthesizer():
             wav_sentence = spectrogram2wav(mag)
             if first_sentence:
                 first_sentence = False
-                tmp = np.concatenate((wav_total, wav_sentence))
+                wav_total = wav_sentence
             else:
                 silence = np.zeros(int(hp.sr * 2.0)).astype(np.float32)
-                tmp = np.concatenate((silence, wav_total, wav_sentence))
-            wav_total = tmp
+                tmp = np.concatenate((wav_total, silence, wav_sentence))
+                wav_total = tmp
 
         write(filename_wav, hp.sr, wav_total)
 
