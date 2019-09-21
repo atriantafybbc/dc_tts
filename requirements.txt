@@ -6,3 +6,7 @@ tensorflow-serving-api==1.13.0
 tqdm
 unidecode
 inflect
+
+# For synthesize:
+matplotlib
+nltk
