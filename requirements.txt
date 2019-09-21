@@ -1,6 +1,8 @@
 librosa==0.7.0
 numpy>=1.11.1
 tensorboard==1.13.0
+# If you are running on a cpu only machine
+# change "tensorflow-gpu" into "tensorflow" below:
 tensorflow-gpu==1.13.1
 tensorflow-serving-api==1.13.0
 tqdm
