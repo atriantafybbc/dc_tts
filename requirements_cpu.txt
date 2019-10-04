@@ -10,3 +10,4 @@ inflect
 # For synthesize:
 matplotlib
 nltk
+playsound
