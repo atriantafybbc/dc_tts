@@ -2,12 +2,19 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sounddevice
+import soundfile
 from hyperparams import Hyperparams as hp
 from synthesize import Synthesizer
-from playsound import playsound
 
-CHECKPOINT_TEXT2MEL = "models/LJ01-1/model_gs_860k"
-CHECKPOINT_SSRN = "models/LJ01-2/model_gs_718k"
+# Update the following two paths:
+CHECKPOINT_TEXT2MEL = "models/LJ01-1/model_gs_1450k"
+CHECKPOINT_SSRN = "models/LJ01-2/model_gs_767k"
+
+def playsound(filename):
+	data, fs = soundfile.read(filename, dtype='float32')  
+	sounddevice.play(data, fs)
+	status = sounddevice.wait()
 
 if __name__ == "__main__":
 	synthesizer = Synthesizer(CHECKPOINT_TEXT2MEL, CHECKPOINT_SSRN)

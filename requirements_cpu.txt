@@ -10,4 +10,5 @@ inflect
 # For synthesize:
 matplotlib
 nltk
-playsound
+sounddevice
+soundfile
