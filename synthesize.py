@@ -65,18 +65,85 @@ class Synthesizer():
         nltk.download('punkt', quiet=True)
         self._sent_detector = nltk.data.load('tokenizers/punkt/english.pickle')
 
-    def encode_text(self, text):
+    def chunk_sentence(self, sentence):
+        def split(text, stop):
+            parts = text.split(stop)
 
+            p = []
+            
+            for i, part in enumerate(parts):
+                if i < len(parts) - 1:
+                    p.append((part + stop).strip())
+                else:
+                    p.append(part)
+            
+            return p
+
+        def join(array):
+            final_items = []
+            acc = ''
+
+            for item in array:
+                if len(acc) + len(item) > hp.max_N:
+                    final_items.append(acc.strip())
+                    acc = item
+                else:
+                    acc = acc + ' ' + item
+            
+            if len(acc) > 0:
+                final_items.append(acc.strip())
+            
+            return final_items
+
+        chunks = []
+        
+        if len(sentence) > hp.max_N:
+            # split on ; then , then space
+            for i in split(sentence, '; '):
+                if len(i) > hp.max_N:
+                    for j in split(i, ', '):
+                        if len(j) > hp.max_N:
+                            words = j.split(' ')
+                            chunks.extend(join(words))
+                        else:
+                            chunks.append(j)
+                else:
+                    chunks.append(i)
+        else:
+            chunks.append(sentence)
+
+        return join(chunks)
+
+    def encode_text(self, text):
         if type(text) is not unicode:
             text = text.decode('utf-8')
+
         lines = text.splitlines()
         sents = []
+
         for line in lines:
             sents.extend(self._sent_detector.tokenize(line.strip()))
-        norm_sents = [text_normalize(_clean_text(sent, ['english_cleaners']).decode('utf-8')).strip() + "E" for sent in sents]
-        texts = np.zeros((len(norm_sents), hp.max_N), np.int32)
-        for i, sent in enumerate(norm_sents):
+        
+        norm_sents = [text_normalize(_clean_text(sent, ['english_cleaners']).decode('utf-8')).strip() for sent in sents]
+
+        final_sents = []
+
+        for sent in norm_sents:
+            chunks = self.chunk_sentence(sent)
+            
+            for chunk in chunks:
+                s = chunk
+                
+                if s.endswith(',') or s.endswith(';'):
+                    s = s[:-1]
+                
+                final_sents.append(s + 'E')
+    
+        texts = np.zeros((len(final_sents), hp.max_N), np.int32)
+        
+        for i, sent in enumerate(final_sents):
             texts[i, :len(sent)] = [self._char2idx[char] for char in sent]
+        
         return texts        
 
     def synthesize(self, text, filename_wav):
